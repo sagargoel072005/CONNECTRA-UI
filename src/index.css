@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.swipe-left {
+  transform: translateX(-100%) rotate(-20deg);
+  opacity: 0;
+}
+.swipe-right {
+  transform: translateX(100%) rotate(20deg);
+  opacity: 0;
+}
+
+/* Custom scrollbar */
+.comment-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comment-scrollbar::-webkit-scrollbar-track {
+  background: #f3f4f6; /* gray-100 */
+  border-radius: 10px;
+}
+
+.comment-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #3b82f6; /* blue-500 */
+  border-radius: 10px;
+}
+
+.comment-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #2563eb; /* blue-600 */
+}
+
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
