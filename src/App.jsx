@@ -3,7 +3,6 @@ import { Provider } from "react-redux";
 
 // 🔹 Redux Store
 import appStore from "./utils/appStore.js";
-
 // 🔹 Main Layout & Pages
 import Body from "./components/Body";
 import Profile from "./components/profile/Profile.jsx";
