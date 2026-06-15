@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const DeliveryPolicy = () => {
+const ShippingAndDeliveryPolicy = () => {
   // 🔹 Ref for background stars
   const rootRef = useRef(null);
 
@@ -40,11 +40,11 @@ const DeliveryPolicy = () => {
           </span>
 
           <h1 className="mt-4 text-4xl md:text-5xl font-semibold bg-gradient-to-r from-indigo-200 via-indigo-400 to-purple-400 text-transparent bg-clip-text">
-            Delivery Policy
+            Shipping & Delivery
           </h1>
 
           <p className="mt-4 text-indigo-200/60 text-sm max-w-md mx-auto">
-            Understand how and when your purchased services are delivered.
+            Learn how our digital delivery process works and when you can expect access to your services.
           </p>
         </div>
 
@@ -54,44 +54,34 @@ const DeliveryPolicy = () => {
           {/* 🔹 Section 1 */}
           <div>
             <h2 className="text-lg font-semibold text-indigo-300 mb-2">
-              Digital Delivery
+              Digital Services Only
             </h2>
             <p className="text-indigo-200/70 text-sm leading-relaxed">
-              All our products and services are delivered digitally. No physical
-              items are shipped.
+              We provide digital services only. Therefore, no physical shipping
+              is required or applicable for any of our products.
             </p>
           </div>
 
           {/* 🔹 Section 2 */}
           <div>
             <h2 className="text-lg font-semibold text-indigo-300 mb-2">
-              Delivery Timeframe
+              Delivery Time
             </h2>
             <p className="text-indigo-200/70 text-sm leading-relaxed">
-              After successful payment, you will receive access credentials or
-              service activation details via your registered email within
-              <span className="text-indigo-300 font-medium"> 1 hour</span>.
+              Once your payment is successfully completed, access credentials
+              or activation details are delivered to your registered email
+              within 1 hour.
             </p>
           </div>
 
           {/* 🔹 Section 3 */}
           <div>
             <h2 className="text-lg font-semibold text-indigo-300 mb-2">
-              Delivery Issues
+              Delay or Issues
             </h2>
             <p className="text-indigo-200/70 text-sm leading-relaxed">
-              If you do not receive your access details within the expected time,
-              please check your spam folder or contact our support team.
-            </p>
-          </div>
-
-          {/* 🔹 Section 4 */}
-          <div>
-            <h2 className="text-lg font-semibold text-indigo-300 mb-2">
-              Contact Support
-            </h2>
-            <p className="text-indigo-200/70 text-sm leading-relaxed">
-              For any delivery-related concerns, reach out to us at:
+              If you experience any delay in receiving your access details,
+              please contact our support team immediately.
             </p>
             <p className="text-indigo-300 font-medium mt-2">
               support@connectra.com
@@ -110,4 +100,4 @@ const DeliveryPolicy = () => {
   );
 };
 
-export default DeliveryPolicy;
+export default ShippingAndDeliveryPolicy;

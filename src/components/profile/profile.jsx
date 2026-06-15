@@ -4,414 +4,28 @@ import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { addUser } from "../../utils/userSlice";
 import { BASE_URL } from "../../utils/constants";
-import {
-  Camera, Save, X, Plus, Check, MapPin, Briefcase,
-  Globe, Github, Linkedin, Twitter, Edit3, Code2,
-  Layers, Cpu, Coffee, BookOpen, Award, FolderGit2,
-  GraduationCap, Link2, FileText, ChevronRight,
-  User, Share2, FlaskConical, Upload, Trash2,
-  Phone, Mail, Calendar, Languages, DollarSign,
-  Building2, Zap, Star, ExternalLink, Download,
-  ChevronDown, Tag, Heart, Target, Clock,
-} from "lucide-react";
+import { Camera, Save, X, Plus, Check, MapPin, Briefcase,Globe, Github, Linkedin, Twitter, Edit3, Code2,Layers, Cpu, Coffee, BookOpen, Award, FolderGit2,GraduationCap, Link2, FileText, ChevronRight,User, Share2, FlaskConical, Upload, Trash2,Phone, Mail, Calendar, Languages, DollarSign,Building2, Zap, Star, ExternalLink, Download,ChevronDown, Tag, Heart, Target, Clock,} from "lucide-react";
+import { PLATFORMS } from "../../constants/platforms.jsx";
+import {SKILL_SUGGESTIONS,SKILL_COLORS,} from "../../constants/skills";
+import {EDIT_TABS,BLANK_EXP,} from "../../constants/tabs.jsx";
+import { buildForm } from "../../utils/buildForm";
+import StarCanvas from "./StarCanvas.jsx";
+import FInput from "./FInput";
+import StatPill from "./StatPill";
+import ResumeUpload from "./ResumeUpload";
+import SkillTag from "./SkillTag";
+import SectionCard from "./SectionCard";
+import SLabel from "./SLabel";
+import SkillSuggestions from "./SkillSuggestions";
+import ExperienceItem from "./ExperienceItem";
+import "./profile.css";
+import PostEdit from "./PostEdit.jsx";
 
-/* ─────────────────────────────────────
-   STAR CANVAS
-───────────────────────────────────── */
-const StarCanvas = () => {
-  const ref = useRef(null);
-  useEffect(() => {
-    const c = ref.current, ctx = c.getContext("2d");
-    let W = (c.width = window.innerWidth), H = (c.height = window.innerHeight);
-    const stars = Array.from({ length: 80 }, () => ({
-      x: Math.random() * W, y: Math.random() * H,
-      r: Math.random() * 1.2 + 0.2, a: Math.random(),
-      da: (Math.random() - 0.5) * 0.003,
-    }));
-    let raf;
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H);
-      stars.forEach(s => {
-        s.a += s.da;
-        if (s.a <= 0 || s.a >= 1) s.da *= -1;
-        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(148,163,255,${s.a * 0.45})`; ctx.fill();
-      });
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    const resize = () => { W = c.width = window.innerWidth; H = c.height = window.innerHeight; };
-    window.addEventListener("resize", resize);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
-  }, []);
-  return <canvas ref={ref} className="fixed inset-0 pointer-events-none z-0" />;
-};
-
-/* ─────────────────────────────────────
-   FLOATING INPUT
-───────────────────────────────────── */
-const FInput = ({ label, value, onChange, type = "text", multiline, icon, placeholder }) => {
-  const [focused, setFocused] = useState(false);
-  const active = focused || (value !== "" && value !== undefined && value !== null && value !== 0);
-  return (
-    <div className="relative mb-4">
-      <div className="absolute -inset-px rounded-[13px] z-0 transition-all duration-300"
-        style={{
-          background: focused
-            ? "linear-gradient(135deg,#6366f1,#8b5cf6,#60a5fa)"
-            : "linear-gradient(135deg,rgba(255,255,255,0.07),rgba(255,255,255,0.03))",
-          opacity: focused ? 1 : 0.5,
-        }}
-      />
-      <div className="relative z-10 rounded-xl flex backdrop-blur-xl"
-        style={{ background: "rgba(8,8,28,0.85)", alignItems: multiline ? "flex-start" : "center" }}
-      >
-        {icon && (
-          <span className="flex-shrink-0 transition-colors duration-300"
-            style={{
-              padding: multiline ? "16px 10px 0 14px" : "0 10px 0 14px",
-              color: focused ? "#818cf8" : "rgba(148,163,184,0.4)", fontSize: 15,
-            }}>{icon}</span>
-        )}
-        <div className="flex-1 relative"
-          style={{
-            paddingTop: active ? 20 : 0, paddingBottom: active ? 8 : 0,
-            minHeight: multiline ? 90 : 50,
-            display: "flex", alignItems: multiline ? "flex-start" : "center",
-            paddingLeft: icon ? 0 : 14, paddingRight: 14,
-          }}
-        >
-          <motion.label
-            animate={{
-              top: active ? 8 : multiline ? 16 : "50%",
-              y: active ? 0 : multiline ? 0 : "-50%",
-              fontSize: active ? 9.5 : 13,
-              color: focused ? "#818cf8" : "rgba(148,163,184,0.4)",
-            }}
-            transition={{ duration: 0.18 }}
-            className="absolute left-0 pointer-events-none font-semibold z-20"
-            style={{ fontFamily: "'DM Sans',sans-serif", letterSpacing: active ? "0.09em" : 0, textTransform: active ? "uppercase" : "none" }}
-          >{label}</motion.label>
-          {multiline ? (
-            <textarea value={value} onChange={onChange} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-              placeholder={active ? placeholder : ""} rows={3}
-              className="w-full bg-transparent border-none outline-none text-slate-200 resize-none text-sm"
-              style={{ fontFamily: "'DM Sans',sans-serif", paddingTop: active ? 4 : 0, lineHeight: 1.65 }}
-            />
-          ) : (
-            <input type={type} value={value} onChange={onChange} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-              placeholder={active ? placeholder : ""}
-              className="w-full bg-transparent border-none outline-none text-slate-200 text-sm"
-              style={{ fontFamily: "'DM Sans',sans-serif" }}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/* ─────────────────────────────────────
-   SKILL TAG
-───────────────────────────────────── */
-const SkillTag = ({ skill, onRemove, accent }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
-    className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold"
-    style={{
-      background: `rgba(${accent || "99,102,241"},0.12)`,
-      border: `1px solid rgba(${accent || "99,102,241"},0.25)`,
-      color: `rgba(${accent ? accent + ",1" : "165,180,252,1"})`,
-      fontFamily: "'DM Sans',sans-serif",
-    }}
-  >
-    {skill}
-    {onRemove && (
-      <button onClick={onRemove} className="bg-transparent border-none cursor-pointer p-0 opacity-60 flex leading-none" style={{ color: "inherit" }}>
-        <X size={11} />
-      </button>
-    )}
-  </motion.div>
-);
-
-/* ─────────────────────────────────────
-   SECTION CARD
-───────────────────────────────────── */
-const SectionCard = ({ title, icon, children, accentColor }) => (
-  <motion.div
-    className="rounded-2xl overflow-hidden mb-4"
-    style={{
-      border: `1px solid rgba(${accentColor || "255,255,255"},0.07)`,
-      background: "rgba(8,8,28,0.7)",
-      backdropFilter: "blur(20px)",
-      boxShadow: "0 0 0 1px rgba(99,102,241,0.06), 0 12px 32px rgba(0,0,0,0.4)",
-    }}
-    initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-    transition={{ type: "spring", stiffness: 60, damping: 16 }}
-  >
-    <div className="flex items-center gap-2.5 px-6 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-      <span style={{ color: "#818cf8" }}>{icon}</span>
-      <span className="font-bold text-sm text-slate-200 tracking-tight" style={{ fontFamily: "'Syne',sans-serif" }}>{title}</span>
-    </div>
-    <div className="p-6">{children}</div>
-  </motion.div>
-);
-
-/* ─────────────────────────────────────
-   STAT PILL
-───────────────────────────────────── */
-const StatPill = ({ value, label, color }) => (
-  <div className="text-center flex-1 rounded-2xl py-4 px-5"
-    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", minWidth: 80 }}
-  >
-    <div className="font-extrabold tracking-tight" style={{
-      fontFamily: "'Syne',sans-serif", fontSize: 24,
-      background: `linear-gradient(135deg, ${color}, ${color}88)`,
-      WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", letterSpacing: "-1px",
-    }}>{value}</div>
-    <div className="uppercase mt-1 tracking-widest" style={{ fontSize: 10, color: "rgba(148,163,184,0.45)", fontWeight: 600, letterSpacing: "0.08em" }}>{label}</div>
-  </div>
-);
-
-const SLabel = ({ children }) => (
-  <div className="text-[10px] font-bold uppercase mb-3 mt-1" style={{ color: "#818cf8", letterSpacing: "0.12em" }}>{children}</div>
-);
-
-/* ─────────────────────────────────────
-   SKILL SUGGESTIONS
-───────────────────────────────────── */
-const SKILL_SUGGESTIONS = {
-  "Frontend": ["React", "Next.js", "Vue.js", "Angular", "TypeScript", "Tailwind CSS", "Sass", "Redux", "GraphQL", "Webpack"],
-  "Backend": ["Node.js", "Express", "Django", "FastAPI", "Spring Boot", "Laravel", "Ruby on Rails", "NestJS", "Flask", "Go"],
-  "Mobile": ["React Native", "Flutter", "Swift", "Kotlin", "Ionic", "Expo"],
-  "Data": ["Python", "TensorFlow", "PyTorch", "Pandas", "Scikit-learn", "SQL", "MongoDB", "PostgreSQL", "Redis", "Kafka"],
-  "DevOps": ["Docker", "Kubernetes", "AWS", "GCP", "Azure", "CI/CD", "Terraform", "Ansible", "Jenkins", "Linux"],
-  "Design": ["Figma", "Adobe XD", "Sketch", "Photoshop", "Illustrator", "UI/UX", "Prototyping"],
-};
-
-const SkillSuggestions = ({ currentSkills, onAdd }) => {
-  const [activeCategory, setActiveCategory] = useState("Frontend");
-  return (
-    <div className="mt-4 rounded-xl overflow-hidden" style={{ border: "1px solid rgba(99,102,241,0.15)", background: "rgba(99,102,241,0.05)" }}>
-      <div className="px-4 pt-3 pb-2">
-        <div className="text-[10px] font-bold uppercase mb-2" style={{ color: "#a5b4fc", letterSpacing: "0.12em" }}>💡 Skill Suggestions</div>
-        <div className="flex flex-wrap gap-1 mb-3">
-          {Object.keys(SKILL_SUGGESTIONS).map(cat => (
-            <button key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className="px-2.5 py-1 rounded-lg text-[11px] font-semibold border-none cursor-pointer transition-all duration-150"
-              style={{
-                background: activeCategory === cat ? "rgba(99,102,241,0.3)" : "rgba(255,255,255,0.04)",
-                color: activeCategory === cat ? "#c7d2fe" : "rgba(148,163,184,0.5)",
-                border: activeCategory === cat ? "1px solid rgba(99,102,241,0.4)" : "1px solid rgba(255,255,255,0.07)",
-              }}
-            >{cat}</button>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {SKILL_SUGGESTIONS[activeCategory].map(skill => {
-            const already = currentSkills.includes(skill);
-            return (
-              <button key={skill}
-                onClick={() => !already && onAdd(skill)}
-                disabled={already || currentSkills.length >= 10}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium cursor-pointer transition-all duration-150 border-none"
-                style={{
-                  background: already ? "rgba(52,211,153,0.1)" : "rgba(255,255,255,0.04)",
-                  color: already ? "#34d399" : "rgba(148,163,184,0.65)",
-                  border: already ? "1px solid rgba(52,211,153,0.2)" : "1px solid rgba(255,255,255,0.08)",
-                  opacity: (!already && currentSkills.length >= 10) ? 0.4 : 1,
-                }}
-              >
-                {already ? <Check size={9} /> : <Plus size={9} />}
-                {skill}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/* ─────────────────────────────────────
-   EXPERIENCE ITEM
-───────────────────────────────────── */
-const ExperienceItem = ({ exp, onRemove, index }) => (
-  <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-    className="rounded-xl p-4 mb-3 relative group"
-    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
-  >
-    <div className="flex items-start justify-between gap-2">
-      <div className="flex-1">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-semibold text-slate-200">{exp.title}</span>
-          {exp.current && <span className="text-[10px] px-2 py-0.5 rounded-md font-bold" style={{ background: "rgba(52,211,153,0.15)", color: "#34d399", border: "1px solid rgba(52,211,153,0.25)" }}>Current</span>}
-        </div>
-        <div className="text-xs mt-0.5 font-medium" style={{ color: "#818cf8" }}>{exp.company}{exp.location ? ` · ${exp.location}` : ""}</div>
-        <div className="text-xs mt-0.5" style={{ color: "rgba(148,163,184,0.45)" }}>{exp.startDate}{exp.endDate ? ` – ${exp.endDate}` : exp.current ? " – Present" : ""}</div>
-        {exp.description && <div className="text-xs mt-2 leading-relaxed" style={{ color: "rgba(148,163,184,0.6)" }}>{exp.description}</div>}
-      </div>
-      {onRemove && (
-        <button onClick={onRemove} className="opacity-0 group-hover:opacity-100 bg-transparent border-none cursor-pointer transition-opacity duration-200" style={{ color: "rgba(252,165,165,0.7)" }}>
-          <Trash2 size={13} />
-        </button>
-      )}
-    </div>
-  </motion.div>
-);
-
-/* ─────────────────────────────────────
-   RESUME UPLOAD
-───────────────────────────────────── */
-const ResumeUpload = ({ resumeUrl, onUpload, uploading }) => {
-  const inputRef = useRef(null);
-  return (
-    <div>
-      {resumeUrl ? (
-        <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3" style={{ background: "rgba(52,211,153,0.07)", border: "1px solid rgba(52,211,153,0.2)" }}>
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(52,211,153,0.15)" }}>
-              <FileText size={15} style={{ color: "#34d399" }} />
-            </div>
-            <div>
-              <div className="text-sm font-semibold" style={{ color: "#34d399" }}>Resume Uploaded</div>
-              <div className="text-[11px]" style={{ color: "rgba(148,163,184,0.45)" }}>Click to view or replace</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <a href={resumeUrl} target="_blank" rel="noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium no-underline"
-              style={{ background: "rgba(52,211,153,0.15)", color: "#34d399", border: "1px solid rgba(52,211,153,0.25)" }}
-            ><ExternalLink size={11} /> View</a>
-            <button onClick={() => inputRef.current.click()}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border-none cursor-pointer"
-              style={{ background: "rgba(99,102,241,0.15)", color: "#a5b4fc", border: "1px solid rgba(99,102,241,0.25)" }}
-            ><Upload size={11} /> Replace</button>
-          </div>
-        </div>
-      ) : (
-        <button onClick={() => inputRef.current.click()}
-          className="w-full rounded-xl py-6 border-none cursor-pointer transition-all duration-200 flex flex-col items-center gap-3"
-          style={{ background: "rgba(255,255,255,0.02)", border: "2px dashed rgba(99,102,241,0.25)" }}
-          onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)"}
-          onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(99,102,241,0.25)"}
-        >
-          {uploading ? (
-            <div className="prof-spinner" />
-          ) : (
-            <>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)" }}>
-                <Upload size={20} style={{ color: "#818cf8" }} />
-              </div>
-              <div>
-                <div className="text-sm font-semibold" style={{ color: "#a5b4fc" }}>Upload Resume / CV</div>
-                <div className="text-xs mt-0.5" style={{ color: "rgba(148,163,184,0.4)" }}>PDF, DOC, DOCX — max 5MB</div>
-              </div>
-            </>
-          )}
-        </button>
-      )}
-      <input type="file" ref={inputRef} className="hidden" accept=".pdf,.doc,.docx" onChange={onUpload} />
-    </div>
-  );
-};
-
-/* ─────────────────────────────────────
-   PLATFORM LINKS CONFIG
-───────────────────────────────────── */
-const PLATFORMS = [
-  { key: "githubId",      label: "GitHub",       placeholder: "octocat",           icon: <Github size={15}/>,      color: "148,163,184", url: u => `https://github.com/${u}` },
-  { key: "linkedIn",      label: "LinkedIn",     placeholder: "john-doe",          icon: <Linkedin size={15}/>,    color: "10,102,194",  url: u => `https://linkedin.com/in/${u}` },
-  { key: "twitterId",     label: "Twitter / X",  placeholder: "johndoe",           icon: <Twitter size={15}/>,     color: "29,161,242",  url: u => `https://twitter.com/${u}` },
-  { key: "leetcodeId",    label: "LeetCode",     placeholder: "lc_handle",         icon: <Code2 size={15}/>,       color: "255,161,22",  url: u => `https://leetcode.com/${u}` },
-  { key: "codechefId",    label: "CodeChef",     placeholder: "cc_handle",         icon: <FlaskConical size={15}/>,color: "90,60,10",    url: u => `https://codechef.com/users/${u}` },
-  { key: "codeforcesId",  label: "Codeforces",   placeholder: "cf_handle",         icon: <Zap size={15}/>,         color: "24,119,242",  url: u => `https://codeforces.com/profile/${u}` },
-  { key: "hackerRankId",  label: "HackerRank",   placeholder: "hr_handle",         icon: <Star size={15}/>,        color: "41,183,88",   url: u => `https://hackerrank.com/profile/${u}` },
-  { key: "kaggleId",      label: "Kaggle",       placeholder: "kaggle_handle",     icon: <Target size={15}/>,      color: "32,186,218",  url: u => `https://kaggle.com/${u}` },
-  { key: "mediumId",      label: "Medium",       placeholder: "medium_handle",     icon: <BookOpen size={15}/>,    color: "255,255,255", url: u => `https://medium.com/@${u}` },
-  { key: "devToId",       label: "Dev.to",       placeholder: "dev_handle",        icon: <FileText size={15}/>,    color: "99,102,241",  url: u => `https://dev.to/${u}` },
-  { key: "portfolio",     label: "Portfolio",    placeholder: "https://site.com",  icon: <Globe size={15}/>,       color: "168,85,247",  url: u => u },
-  { key: "npmId",         label: "npm",          placeholder: "npm_username",      icon: <Tag size={15}/>,         color: "203,65,65",   url: u => `https://npmjs.com/~${u}` },
-];
-
-/* ─────────────────────────────────────
-   BUILD FORM STATE
-───────────────────────────────────── */
-const buildForm = (u) => ({
-  firstName:   u?.firstName   || "",
-  lastName:    u?.lastName    || "",
-  age:         u?.age         || "",
-  gender:      u?.gender      || "",
-  about:       u?.about       || "",
-  headline:    u?.headline    || "",
-  phone:       u?.phone       || "",
-  skills:      u?.skills      || [],
-  company:     u?.company     || "",
-  location:    u?.location    || "",
-  openToWork:  u?.openToWork  ?? false,
-  jobType:     u?.jobType     || "",
-  expectedSalary: u?.expectedSalary || "",
-  preferredLanguages: u?.preferredLanguages || [],
-  // platforms
-  portfolio:   u?.portfolio   || "",
-  githubId:    u?.githubId    || "",
-  linkedIn:    u?.linkedIn    || "",
-  twitterId:   u?.twitterId   || "",
-  leetcodeId:  u?.leetcodeId  || "",
-  codechefId:  u?.codechefId  || "",
-  codeforcesId:u?.codeforcesId|| "",
-  hackerRankId:u?.hackerRankId|| "",
-  kaggleId:    u?.kaggleId    || "",
-  mediumId:    u?.mediumId    || "",
-  devToId:     u?.devToId     || "",
-  npmId:       u?.npmId       || "",
-  // projects & certs
-  projects:       u?.projects       || [],
-  certifications: u?.certifications || [],
-  // experience
-  experience: u?.experience || [],
-  // academics
-  tenth_school:   u?.academicQualifications?.tenth?.school     || "",
-  tenth_board:    u?.academicQualifications?.tenth?.board      || "",
-  tenth_pct:      u?.academicQualifications?.tenth?.percentage || "",
-  twelfth_school: u?.academicQualifications?.twelfth?.school   || "",
-  twelfth_board:  u?.academicQualifications?.twelfth?.board    || "",
-  twelfth_pct:    u?.academicQualifications?.twelfth?.percentage|| "",
-  ug_college: u?.academicQualifications?.ug?.college || "",
-  ug_degree:  u?.academicQualifications?.ug?.degree  || "",
-  ug_branch:  u?.academicQualifications?.ug?.branch  || "",
-  ug_sgpa:    u?.academicQualifications?.ug?.sgpa    || "",
-  pg_college: u?.academicQualifications?.pg?.college || "",
-  pg_degree:  u?.academicQualifications?.pg?.degree  || "",
-  pg_branch:  u?.academicQualifications?.pg?.branch  || "",
-  pg_sgpa:    u?.academicQualifications?.pg?.sgpa    || "",
-});
-
-const SKILL_COLORS = ["99,102,241","139,92,246","96,165,250","52,211,153","251,191,36","244,114,182","251,146,60","34,211,238"];
-
-const EDIT_TABS = [
-  { id: "basic",      label: "Basic",      icon: <User size={13}/> },
-  { id: "work",       label: "Work",       icon: <Briefcase size={13}/> },
-  { id: "platforms",  label: "Platforms",  icon: <Link2 size={13}/> },
-  { id: "skills",     label: "Skills",     icon: <Cpu size={13}/> },
-  { id: "experience", label: "Experience", icon: <Clock size={13}/> },
-  { id: "academics",  label: "Academics",  icon: <GraduationCap size={13}/> },
-  { id: "projects",   label: "Projects",   icon: <FolderGit2 size={13}/> },
-  { id: "resume",     label: "Resume",     icon: <FileText size={13}/> },
-];
-
-const BLANK_EXP = { title: "", company: "", location: "", startDate: "", endDate: "", current: false, description: "", employmentType: "" };
-
-/* ═══════════════════════════════════════
-   PROFILE PAGE
-═══════════════════════════════════════ */
 const Profile = () => {
   const user     = useSelector(s => s.user);
   const dispatch = useDispatch();
   const fileInputRef  = useRef(null);
   const coverInputRef = useRef(null);
-
   const [form,         setForm]         = useState(() => buildForm(user));
   const [editing,      setEditing]      = useState(false);
   const [saving,       setSaving]       = useState(false);
@@ -427,7 +41,6 @@ const Profile = () => {
   const [resumeUploading, setResumeUploading] = useState(false);
   const [profileCompletion, setProfileCompletion] = useState(0);
 
-  // Calculate profile completion
   useEffect(() => {
     if (!user) return;
     const checks = [
@@ -558,33 +171,6 @@ const Profile = () => {
 
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
-        .prof-root::before {
-          content:''; position:fixed; inset:0;
-          background-image: linear-gradient(rgba(99,102,241,0.025) 1px,transparent 1px), linear-gradient(90deg,rgba(99,102,241,0.025) 1px,transparent 1px);
-          background-size:60px 60px; pointer-events:none; z-index:0;
-        }
-        .cover-overlay::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 30% 50%,rgba(99,102,241,0.3) 0%,transparent 65%),radial-gradient(ellipse at 80% 50%,rgba(139,92,246,0.2) 0%,transparent 65%); }
-        .prof-spinner { width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);border-top-color:#fff;animation:pSpin .7s linear infinite;display:inline-block; }
-        @keyframes pSpin { to{transform:rotate(360deg)} }
-        .tab-active { background:linear-gradient(135deg,#6366f1,#8b5cf6) !important; color:#fff !important; box-shadow:0 0 16px rgba(99,102,241,0.3); }
-        .tab-inactive:hover { background:rgba(255,255,255,0.06) !important; color:#e2e8f0 !important; }
-        .social-link:hover { background:rgba(255,255,255,0.08) !important; color:#e2e8f0 !important; border-color:rgba(255,255,255,0.15) !important; }
-        .edit-btn-primary:hover { transform:translateY(-1px); box-shadow:0 0 36px rgba(99,102,241,0.6) !important; }
-        .save-btn:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 0 36px rgba(99,102,241,0.6) !important; }
-        .save-btn:disabled { opacity:.6; cursor:not-allowed; }
-        .cancel-btn:hover { background:rgba(255,255,255,0.08) !important; color:#fff !important; }
-        .add-btn:hover { transform:translateY(-1px); }
-        .item-pill:hover .remove-x { opacity:1 !important; }
-        .cover-edit-hover:hover .cover-hint { opacity:1 !important; }
-        .avatar-edit-hover:hover .avatar-hint { opacity:1 !important; }
-        .group:hover .remove-x { opacity: 1 !important; }
-        .completion-bar { transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .platform-card:hover { border-color: rgba(99,102,241,0.3) !important; background: rgba(99,102,241,0.07) !important; transform: translateY(-1px); }
-        .platform-card { transition: all 0.2s ease; }
-      `}</style>
-
       <div className="prof-root relative min-h-screen overflow-x-hidden pb-24" style={{ background: "#060614", fontFamily: "'DM Sans',sans-serif" }}>
         <StarCanvas />
 
@@ -1284,8 +870,10 @@ const Profile = () => {
           </AnimatePresence>
         </div>
       </div>
+      <PostEdit />
     </>
   );
 };
 
 export default Profile;
+

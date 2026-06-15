@@ -9,10 +9,8 @@ import {
   Briefcase,
 } from "lucide-react";
 import { BASE_URL } from "../utils/constants";
+import { useNavigate } from "react-router-dom";
 
-/* ─────────────────────────────────────
-   STAR CANVAS (same as Profile)
-───────────────────────────────────── */
 const StarCanvas = () => {
   const ref = useRef(null);
   useEffect(() => {
@@ -42,9 +40,7 @@ const StarCanvas = () => {
   return <canvas ref={ref} className="fixed inset-0 pointer-events-none z-0" />;
 };
 
-/* ─────────────────────────────────────
-   SKILL TAG
-───────────────────────────────────── */
+
 const SKILL_COLORS = [
   "99,102,241", "139,92,246", "96,165,250",
   "52,211,153", "251,191,36", "244,114,182",
@@ -67,9 +63,7 @@ const SkillTag = ({ skill, idx = 0 }) => {
   );
 };
 
-/* ─────────────────────────────────────
-   STAT PILL
-───────────────────────────────────── */
+
 const StatPill = ({ value, label, color }) => (
   <div
     className="text-center flex-1 rounded-2xl py-4 px-5"
@@ -106,15 +100,15 @@ const StatPill = ({ value, label, color }) => (
   </div>
 );
 
-/* ─────────────────────────────────────
-   CONNECTION CARD
-───────────────────────────────────── */
+
 const ConnectionCard = ({ user, onMessage, onRemove }) => {
+
   const [removing, setRemoving] = useState(false);
   const accent = SKILL_COLORS[Math.abs((user?.firstName?.charCodeAt(0) || 0) % SKILL_COLORS.length)];
 
   const displayName = `${user?.firstName || ""} ${user?.lastName || ""}`.trim() || "Unknown";
   const avatar = user?.photoUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.firstName}&backgroundColor=b6e3f4`;
+const navigate = useNavigate();
 
   const handleRemove = async () => {
     setRemoving(true);
@@ -271,7 +265,7 @@ const ConnectionCard = ({ user, onMessage, onRemove }) => {
               color: "rgba(148,163,184,0.6)",
               fontFamily: "'DM Sans',sans-serif",
             }}
-            onClick={() => window.open(`/profile/${user?._id}`, "_blank")}
+            onClick={() => navigate(`/profile/${user._id}`)}
           >
             <Users size={13} /> View
           </button>
@@ -294,9 +288,7 @@ const ConnectionCard = ({ user, onMessage, onRemove }) => {
   );
 };
 
-/* ─────────────────────────────────────
-   PENDING REQUEST CARD
-───────────────────────────────────── */
+
 const PendingCard = ({ request, onAccept, onReject }) => {
   const [acting, setActing] = useState(null); // "accept" | "reject"
   const user = request?.fromUserId;
@@ -402,9 +394,7 @@ const PendingCard = ({ request, onAccept, onReject }) => {
   );
 };
 
-/* ─────────────────────────────────────
-   EMPTY STATE
-───────────────────────────────────── */
+
 const EmptyState = ({ tab }) => (
   <motion.div
     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
@@ -428,18 +418,17 @@ const EmptyState = ({ tab }) => (
   </motion.div>
 );
 
-/* ═══════════════════════════════════════
-   CONNECTIONS PAGE
-═══════════════════════════════════════ */
+
 const Connections = () => {
-  const [connections, setConnections]   = useState([]);
-  const [pending,     setPending]       = useState([]);
-  const [loading,     setLoading]       = useState(true);
-  const [pendingLoad, setPendingLoad]   = useState(true);
-  const [activeTab,   setActiveTab]     = useState("connections");
-  const [search,      setSearch]        = useState("");
+  const navigate = useNavigate();
+  const [connections, setConnections] = useState([]);
+  const [pending, setPending] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pendingLoad, setPendingLoad] = useState(true);
+  const [activeTab, setActiveTab] = useState("connections");
+  const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
-  const [toast,       setToast]         = useState(null); // { msg, type }
+  const [toast, setToast] = useState(null); // { msg, type }
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -468,7 +457,7 @@ const Connections = () => {
     const fetchPending = async () => {
       try {
         setPendingLoad(true);
-        const res = await axios.get(BASE_URL + "/user/requests/received", { withCredentials: true });
+        const res = await axios.get(BASE_URL + "/user/request/received", { withCredentials: true });
         // API returns array of connection request objects with fromUserId populated
         setPending(res.data?.data || res.data || []);
       } catch {
@@ -524,10 +513,8 @@ const Connections = () => {
     }
   };
 
-  /* ── Message (navigate to chat) ── */
   const handleMessage = (user) => {
-    // Adjust the route to match your chat routing
-    window.location.href = `/chat/${user._id}`;
+    navigate(`/chat/${user._id}`);
   };
 
   /* ── Filtered connections ── */
@@ -551,41 +538,11 @@ const Connections = () => {
 
   const TABS = [
     { id: "connections", label: "Connections", count: connections.length },
-    { id: "pending",     label: "Pending",     count: pending.length },
+    { id: "pending", label: "Pending", count: pending.length },
   ];
 
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
-        .conn-root::before {
-          content:''; position:fixed; inset:0;
-          background-image:linear-gradient(rgba(99,102,241,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,0.025) 1px,transparent 1px);
-          background-size:60px 60px; pointer-events:none; z-index:0;
-        }
-        .conn-spinner {
-          width:14px;height:14px;border-radius:50%;
-          border:2px solid rgba(255,255,255,0.25);border-top-color:#fff;
-          animation:cSpin .7s linear infinite;display:inline-block;
-        }
-        @keyframes cSpin{to{transform:rotate(360deg)}}
-        .conn-msg-btn:hover { transform:translateY(-1px); box-shadow:0 0 28px rgba(99,102,241,0.5) !important; }
-        .conn-view-btn:hover { background:rgba(255,255,255,0.09) !important; color:#e2e8f0 !important; }
-        .conn-remove-btn:hover { background:rgba(239,68,68,0.14) !important; color:#fca5a5 !important; border-color:rgba(239,68,68,0.35) !important; }
-        .conn-accept-btn:hover { transform:translateY(-1px); box-shadow:0 0 28px rgba(52,211,153,0.4) !important; }
-        .conn-reject-btn:hover { background:rgba(239,68,68,0.14) !important; color:#fca5a5 !important; border-color:rgba(239,68,68,0.3) !important; }
-        .conn-social-link:hover { background:rgba(255,255,255,0.08) !important; color:#e2e8f0 !important; }
-        .conn-filter-btn { transition:all .2s; }
-        .conn-filter-btn.active { background:linear-gradient(135deg,#6366f1,#8b5cf6) !important; border-color:transparent !important; color:#fff !important; box-shadow:0 0 16px rgba(99,102,241,0.3) !important; }
-        .conn-filter-btn:not(.active):hover { background:rgba(255,255,255,0.07) !important; color:#e2e8f0 !important; }
-        .conn-tab { transition:all .2s; }
-        .conn-tab.active { background:linear-gradient(135deg,#6366f1,#8b5cf6) !important; color:#fff !important; box-shadow:0 0 16px rgba(99,102,241,0.3); }
-        .conn-tab:not(.active):hover { background:rgba(255,255,255,0.07) !important; color:#e2e8f0 !important; }
-        .conn-search:focus { border-color:rgba(99,102,241,0.5) !important; }
-        .conn-search::placeholder { color:rgba(148,163,184,0.35); }
-        .conn-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:14px; }
-        @media(max-width:600px) { .conn-card-grid { grid-template-columns:1fr; } }
-      `}</style>
 
       <div
         className="conn-root relative min-h-screen overflow-x-hidden pb-24"
@@ -666,8 +623,8 @@ const Connections = () => {
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             transition={{ type: "spring", stiffness: 60, damping: 16, delay: 0.05 }}
           >
-            <StatPill value={connections.length} label="Total"   color="#818cf8" />
-            <StatPill value={pending.length}      label="Pending" color="#fbbf24" />
+            <StatPill value={connections.length} label="Total" color="#818cf8" />
+            <StatPill value={pending.length} label="Pending" color="#fbbf24" />
             <StatPill value={connections.filter(u => (u.skills || []).length > 0).length} label="With Skills" color="#34d399" />
             <StatPill value={connections.filter(u => u.githubId).length} label="On GitHub" color="#60a5fa" />
           </motion.div>
