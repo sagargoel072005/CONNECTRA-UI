@@ -26,6 +26,8 @@ import Support from "./components/footer/Support.jsx";
 import Careers from "./components/footer/Careers.jsx";
 import Premium from "./components/Premium.jsx";
 import UserProfilePage from "./components/UserProfilePage.jsx";
+import SubscriptionStatus from "./components/SubscriptionStatus.jsx"
+
 function App() {
   return (
     <Provider store={appStore}>
@@ -56,6 +58,10 @@ function App() {
             <Route path="/chat/:targetUserId" element={<Chat />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/premium" element={<Premium />} />
+            <Route
+ path="/subscription-status"
+ element={<SubscriptionStatus />}
+/>
           </Route>
 
         </Routes>
