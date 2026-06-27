@@ -88,25 +88,21 @@ const Footer = () => {
 
             <ul className="space-y-3">
               <li><Link to="/terms-and-conditions">Terms & Conditions</Link></li>
-              <li><Link to="/privacy-policy">Privacy Policy</Link></li>
               <li><Link to="/contact-us">Contact Us</Link></li>
             </ul>
 
             <ul className="space-y-3">
               <li><Link to="/cancellation-and-refund-policy">Cancellation</Link></li>
               <li><Link to="/shipping-and-delivery-policy">Shipping</Link></li>
-              <li><Link to="/media-centre">Media Centre</Link></li>
             </ul>
 
             <ul className="space-y-3">
               <li><Link to="/refund-policy">Refund Policy</Link></li>
               <li><Link to="/delivery-policy">Delivery Policy</Link></li>
-              <li><Link to="/about-us">About Us</Link></li>
             </ul>
 
             <ul className="space-y-3">
               <li><Link to="/faq">FAQ</Link></li>
-              <li><Link to="/support">Support</Link></li>
               <li><Link to="/careers">Careers</Link></li>
             </ul>
 
