@@ -473,7 +473,7 @@ const Connections = () => {
   const handleAccept = async (requestId) => {
     try {
       await axios.post(
-        `${BASE_URL}/request/review/${requestId}/accepted`,
+        `${BASE_URL}/request/review/accepted/${requestId}`,
         {},
         { withCredentials: true }
       );
@@ -490,7 +490,7 @@ const Connections = () => {
   const handleReject = async (requestId) => {
     try {
       await axios.post(
-        `${BASE_URL}/request/review/${requestId}/rejected`,
+        `${BASE_URL}/request/review/rejected/${requestId}`,
         {},
         { withCredentials: true }
       );
@@ -504,7 +504,7 @@ const Connections = () => {
   /* ── Remove connection ── */
   const handleRemove = async (userId) => {
     try {
-      await axios.delete(`${BASE_URL}/connection/remove/${userId}`, { withCredentials: true });
+      await axios.delete(`${BASE_URL}/user/connection/remove/${userId}`, { withCredentials: true });
       setConnections(c => c.filter(u => u._id !== userId));
       showToast("Connection removed");
     } catch {
@@ -551,8 +551,8 @@ const Connections = () => {
         <StarCanvas />
 
         {/* BG orbs */}
-        <div className="fixed rounded-full pointer-events-none z-0" style={{ width: 500, height: 500, background: "radial-gradient(circle,rgba(99,102,241,0.07) 0%,transparent 70%)", top: -100, right: -100, filter: "blur(80px)" }} />
-        <div className="fixed rounded-full pointer-events-none z-0" style={{ width: 400, height: 400, background: "radial-gradient(circle,rgba(139,92,246,0.05) 0%,transparent 70%)", bottom: 50, left: -100, filter: "blur(80px)" }} />
+        <div className="absolute rounded-full pointer-events-none z-0" style={{ width: 500, height: 500, background: "radial-gradient(circle,rgba(99,102,241,0.07) 0%,transparent 70%)", top: -100, right: -100, filter: "blur(80px)" }} />
+        <div className="absolute rounded-full pointer-events-none z-0" style={{ width: 400, height: 400, background: "radial-gradient(circle,rgba(139,92,246,0.05) 0%,transparent 70%)", bottom: 50, left: -100, filter: "blur(80px)" }} />
 
         {/* Toast */}
         <AnimatePresence>

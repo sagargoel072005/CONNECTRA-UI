@@ -42,8 +42,7 @@ const StarCanvas = () => {
    CONFIG  –  GNews API (free: 100 req/day, CORS-friendly)
    Get your key → https://gnews.io
 ───────────────────────────────────── */
-const NEWS_API_KEY = import.meta.env.VITE_NEWS_API_KEY;
-const BASE = "https://gnews.io/api/v4";
+import { BASE_URL } from "../utils/constants";
 
 const CATEGORIES = [
   { id: "technology", label: "All Tech",  icon: <Cpu size={13} /> },
@@ -211,6 +210,8 @@ const TechNews = () => {
   const [hasMore, setHasMore]         = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
+  const abortRef = useRef(null); // tracks in-flight request, cancels stale ones
+
   const PER_PAGE = 10;
 
   useEffect(() => {
@@ -221,33 +222,31 @@ const TechNews = () => {
     return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); };
   }, []);
 
+  // cancel any pending request on unmount (covers StrictMode double-mount too)
+  useEffect(() => {
+    return () => {
+      if (abortRef.current) abortRef.current.abort();
+    };
+  }, []);
+
   /* ── Build GNews URL ── */
-  const buildUrl = (cat, q, pg) => {
-    const offset = (pg - 1) * PER_PAGE;          // GNews uses "from" offset via page math
-    const common = `&max=${PER_PAGE}&lang=en&apikey=${NEWS_API_KEY}`;
+// AB — BASE_URL apna import kar
 
-    if (q) {
-      // Free-text search → /search
-      return `${BASE}/search?q=${encodeURIComponent(q)}&page=${pg}${common}`;
-    }
-
-    const keyword = CATEGORY_QUERY[cat];
-    if (keyword) {
-      // Non-native category → search endpoint
-      return `${BASE}/search?q=${encodeURIComponent(keyword)}&page=${pg}${common}`;
-    }
-
-    // Native GNews category → top-headlines
-    return `${BASE}/top-headlines?category=${cat}&page=${pg}${common}`;
-  };
+const buildUrl = (cat, q, pg) => {
+  const params = new URLSearchParams({ page: pg });
+  if (q)                    params.set("q", q);
+  else if (CATEGORY_QUERY[cat]) params.set("q", CATEGORY_QUERY[cat]);
+  else                      params.set("category", cat);
+  return `${BASE_URL}/api/news?${params}`;
+};
 
   /* ── Fetch ── */
   const fetchNews = useCallback(async (cat, q, pg = 1, append = false) => {
-    if (!NEWS_API_KEY || NEWS_API_KEY === "YOUR_NEWS_API_KEY") {
-      setError("Add your GNews API key in VITE_NEWS_API_KEY. Get a free key at gnews.io");
-      setLoading(false);
-      return;
-    }
+
+    // cancel previous in-flight request before starting a new one
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
 
     if (!append) setLoading(true);
     else setLoadingMore(true);
@@ -255,7 +254,7 @@ const TechNews = () => {
 
     try {
       const url = buildUrl(cat, q, pg);
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: controller.signal });
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
@@ -276,11 +275,14 @@ const TechNews = () => {
       setHasMore(incoming.length === PER_PAGE);
       setLastUpdated(new Date());
     } catch (err) {
+      if (err.name === "AbortError") return; // stale request cancelled, ignore silently
       setError(err.message || "Failed to fetch news");
       if (!append) setArticles([]);
     } finally {
-      setLoading(false);
-      setLoadingMore(false);
+      if (!controller.signal.aborted) {
+        setLoading(false);
+        setLoadingMore(false);
+      }
     }
   }, []);
 
@@ -335,9 +337,8 @@ const TechNews = () => {
         <StarCanvas />
 
         {/* BG orbs */}
-        <div className="fixed rounded-full pointer-events-none z-0" style={{ width:500,height:500,background:"radial-gradient(circle,rgba(99,102,241,0.07) 0%,transparent 70%)",top:-100,right:-100,filter:"blur(80px)" }} />
-        <div className="fixed rounded-full pointer-events-none z-0" style={{ width:400,height:400,background:"radial-gradient(circle,rgba(139,92,246,0.05) 0%,transparent 70%)",bottom:50,left:-100,filter:"blur(80px)" }} />
-
+      <div className="absolute rounded-full pointer-events-none z-0" style={{ width:500,height:500,background:"radial-gradient(circle,rgba(99,102,241,0.07) 0%,transparent 70%)",top:-100,right:-100,filter:"blur(80px)" }} />
+<div className="absolute rounded-full pointer-events-none z-0" style={{ width:400,height:400,background:"radial-gradient(circle,rgba(139,92,246,0.05) 0%,transparent 70%)",bottom:50,left:-100,filter:"blur(80px)" }} />
         <div className="relative z-10 max-w-[1100px] mx-auto px-5 md:px-7 pt-10">
 
           {/* ── HERO CARD ── */}

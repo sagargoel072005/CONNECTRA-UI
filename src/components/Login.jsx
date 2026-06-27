@@ -178,28 +178,32 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    if (!emailId || !password) {
-      setError("Email and password are required");
-      return;
-    }
-    try {
-      setLoading(true);
-      setError("");
-      const res = await axios.post(
-        BASE_URL + "/login",
-        { emailId: emailId.trim(), password },
-        { withCredentials: true }
-      );
-      dispatch(addUser(res.data));
-      setSuccess(true);
-      setTimeout(() => navigate("/feed"), 600);
-    } catch (err) {
-      setError(err?.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+const handleLogin = async () => {
+  if (!emailId || !password) {
+    setError("Email and password are required");
+    return;
+  }
+  try {
+    setLoading(true);
+    setError("");
+    await axios.post(
+      BASE_URL + "/login",
+      { emailId: emailId.trim(), password },
+      { withCredentials: true }
+    );
+    // Login ke baad fresh profile fetch karo — photoUrl bhi aayega
+    const profileRes = await axios.get(BASE_URL + "/profile/view", {
+      withCredentials: true,
+    });
+    dispatch(addUser(profileRes.data));
+    setSuccess(true);
+    setTimeout(() => navigate("/feed"), 600);
+  } catch (err) {
+    setError(err?.response?.data?.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleGoogleLogin = () => {
     window.location.href = BASE_URL + "/auth/google";

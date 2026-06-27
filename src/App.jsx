@@ -1,9 +1,8 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import appStore from "./utils/appStore.js";
 import Body from "./components/Body";
-import Profile from "./components/profile/Profile.jsx";
+import Profile from "./components/profile/profile.jsx";
 import Login from "./components/Login";
 import Feed from "./components/Feed";
 import Requests from "./components/Requests";
@@ -27,6 +26,8 @@ import Careers from "./components/footer/Careers.jsx";
 import Premium from "./components/Premium.jsx";
 import UserProfilePage from "./components/UserProfilePage.jsx";
 import SubscriptionStatus from "./components/SubscriptionStatus.jsx"
+import Discover from "./components/Discover.jsx";
+import AIResumeBuilder from "./components/AIResumeBuilder.jsx";
 
 function App() {
   return (
@@ -49,19 +50,20 @@ function App() {
           <Route path="/media-centre" element={<MediaCenter />} />
           <Route path="/delivery-policy" element={<DeliveryPolicy />} />
           <Route path="/about-us" element={<AboutUs />} />
-          <Route path='/tech-news' element={<TechNews />} />
+          {/* 👈 /tech-news yahan se HATA diya */}
+
           <Route element={<Body />}>
-          <Route path="/requests" element={<Requests />} />
+            <Route path="/requests" element={<Requests />} />
             <Route path="/feed" element={<Feed />} />
             <Route path="/connections" element={<Connections />} />
-              <Route path="/profile/:userId" element={<UserProfilePage />} />
+            <Route path="/profile/:userId" element={<UserProfilePage />} />
             <Route path="/chat/:targetUserId" element={<Chat />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/premium" element={<Premium />} />
-            <Route
- path="/subscription-status"
- element={<SubscriptionStatus />}
-/>
+            <Route path="/subscription-status" element={<SubscriptionStatus />} />
+            <Route path="/tech-news" element={<TechNews />} /> 
+          <Route path="/discover" element={<Discover />}/>  {/* 👈 YAHAN ADD KIYA */}
+          <Route path="/resume-builder" element={<AIResumeBuilder />} />
           </Route>
 
         </Routes>

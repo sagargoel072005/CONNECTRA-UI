@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+#root {
+  overflow-x: hidden;
+}
 
 .swipe-left {
   transform: translateX(-100%) rotate(-20deg);
@@ -355,6 +364,12 @@
   gap: 22px;
 }
 
+@media (max-width: 360px) {
+  .feed-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Empty state */
 .feed-empty {
   grid-column: 1 / -1;
@@ -415,7 +430,7 @@
 
 /* Glow orbs */
 .f-orb {
-  position: fixed;
+  position: absolute;
   border-radius: 50%;
   pointer-events: none;
   filter: blur(90px);

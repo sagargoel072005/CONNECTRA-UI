@@ -281,7 +281,7 @@ const Profile = () => {
                     {form.age ? ` · ${form.age} yrs` : ""}
                     {form.gender ? ` · ${form.gender}` : ""}
                   </p>
-                  <p className="mt-1 text-xs" style={{ color:"rgba(148,163,184,0.3)" }}>{user?.emailId}</p>
+                  <p className="mt-1 text-xs break-all" style={{ color:"rgba(148,163,184,0.3)" }}>{user?.emailId}</p>
                 </div>
                 <div className="flex items-center gap-2.5 flex-wrap">
                   {user?.resumeUrl && !editing && (
@@ -444,7 +444,7 @@ const Profile = () => {
                     <Github size={15}/> github.com/{form.githubId}
                   </a>
                   <img
-                    src={`https://github-readme-stats.vercel.app/api?username=${form.githubId}&show_icons=true&theme=tokyonight&bg_color=00000000&title_color=818cf8&text_color=94a3b8&icon_color=818cf8&border_color=ffffff18&hide_border=false`}
+                    src={`https://github-readme-stats.vercel.app/api?username=${form.githubId}&show_icons=true&theme=tokyonight&bg_color=00000000&title_color=818cf8&text_color=94a3b8&icon_color=818cf8&border_color=ffffff18&hide_border=false&hide_rank=true`}
                     alt="GitHub Stats" className="w-full rounded-xl"
                     onError={e => { e.currentTarget.style.display="none"; }}
                   />
@@ -490,7 +490,7 @@ const Profile = () => {
                 transition={{ type:"spring",stiffness:60,damping:16 }}
               >
                 {/* Edit header */}
-                <div className="flex items-center justify-between px-7 py-5" style={{ borderBottom:"1px solid rgba(255,255,255,0.06)",background:"rgba(99,102,241,0.05)" }}>
+                <div className="flex items-center justify-between flex-wrap gap-3 px-4 sm:px-7 py-5" style={{ borderBottom:"1px solid rgba(255,255,255,0.06)",background:"rgba(99,102,241,0.05)" }}>
                   <div className="flex items-center gap-2.5 font-extrabold text-slate-200 tracking-tight" style={{ fontFamily:"'Syne',sans-serif",fontSize:16,letterSpacing:"-0.4px" }}>
                     <Edit3 size={16} style={{ color:"#818cf8" }} />
                     Edit Profile
@@ -503,7 +503,7 @@ const Profile = () => {
                 </div>
 
                 {/* Tabs */}
-                <div className="px-7 pt-6">
+                <div className="px-4 sm:px-7 pt-6">
                   <div className="flex flex-wrap gap-1 rounded-xl p-1 w-fit mb-6" style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)" }}>
                     {EDIT_TABS.map(tab => (
                       <button key={tab.id}
@@ -515,7 +515,7 @@ const Profile = () => {
                   </div>
                 </div>
 
-                <div className="px-7 pb-2">
+                <div className="px-4 sm:px-7 pb-2">
                   <AnimatePresence mode="wait">
 
                     {/* ── BASIC TAB ── */}
@@ -844,7 +844,7 @@ const Profile = () => {
                 </div>
 
                 {/* Save bar */}
-                <div className="flex items-center justify-between gap-3 flex-wrap px-7 py-4 mt-4" style={{ borderTop:"1px solid rgba(255,255,255,0.06)",background:"rgba(99,102,241,0.04)" }}>
+                <div className="flex items-center justify-between gap-3 flex-wrap px-4 sm:px-7 py-4 mt-4" style={{ borderTop:"1px solid rgba(255,255,255,0.06)",background:"rgba(99,102,241,0.04)" }}>
                   <div>
                     {error && (
                       <div className="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm" style={{ background:"rgba(239,68,68,0.1)",border:"1px solid rgba(239,68,68,0.2)",color:"#fca5a5" }}>
@@ -876,4 +876,3 @@ const Profile = () => {
 };
 
 export default Profile;
-

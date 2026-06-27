@@ -39,13 +39,13 @@ const UserCard = ({ user }) => {
 
   return (
     <div
-      className="w-80 h-[520px] rounded-3xl overflow-hidden flex flex-col
+      className="w-full max-w-80 h-[520px] rounded-3xl overflow-hidden flex flex-col
       bg-white/5 backdrop-blur-xl border border-white/10 
       shadow-[0_20px_60px_rgba(0,0,0,0.6)]
       hover:scale-[1.02] transition duration-300"
     >
       {/* 🔹 User Image */}
-      <div className="relative w-full h-80">
+      <div className="relative w-full h-80 rounded-t-3xl overflow-hidden">
         <img
           src={photoUrl || "https://via.placeholder.com/400x300?text=No+Image"}
           alt={`${firstName} ${lastName}`}
@@ -54,8 +54,9 @@ const UserCard = ({ user }) => {
 
         {/* 🔹 Gender Tag */}
         <span
-          className="absolute top-3 right-3 text-xs px-3 py-1 rounded-full
-          bg-white/10 backdrop-blur-md border border-white/20 text-white"
+          className="absolute top-4 right-4 text-xs px-3 py-1 rounded-full
+          bg-white/10 backdrop-blur-md border border-white/20 text-white
+          shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
         >
           {gender}
         </span>
