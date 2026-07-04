@@ -1,6 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Provider } from "react-redux";
-import appStore from "./utils/appStore.js";
 import Body from "./components/Body";
 import Profile from "./components/profile/profile.jsx";
 import Login from "./components/Login";
@@ -27,7 +25,7 @@ import AIResumeBuilder from "./components/AIResumeBuilder.jsx";
 
 function App() {
   return (
-    <Provider store={appStore}>
+
       <BrowserRouter>
         <Routes>
 
@@ -59,7 +57,7 @@ function App() {
 
         </Routes>
       </BrowserRouter>
-    </Provider>
+
   );
 }
 

@@ -175,12 +175,6 @@ const stats = [
 
             {/* Desktop buttons */}
             <div className="hidden sm:flex items-center gap-2">
-              <button className="font-dm text-[13px] font-medium px-4 py-2 rounded-[10px] transition-all duration-200 cursor-pointer"
-                style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "#fff"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.7)"; }}
-                onClick={() => navigate("/about-us")}
-              >About</button>
               
               <button className="font-dm text-[13px] font-semibold px-5 py-2 rounded-[10px] text-white border-none cursor-pointer transition-all duration-200"
                 style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)", boxShadow: "0 0 20px rgba(99,102,241,0.35)" }}
@@ -202,7 +196,7 @@ const stats = [
           {/* Mobile menu drawer */}
           {mobileMenu && (
             <div className="sm:hidden flex flex-col gap-2 px-5 pb-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(6,6,20,0.97)" }}>
-              <button className="text-left py-3 text-sm font-medium border-none bg-transparent cursor-pointer" style={{ color: "rgba(255,255,255,0.7)" }} onClick={() => { navigate("/about"); setMobileMenu(false); }}>About</button>
+             
               <button className="text-left py-3 text-sm font-medium border-none bg-transparent cursor-pointer" style={{ color: "rgba(255,255,255,0.7)" }} onClick={() => { navigate("/features"); setMobileMenu(false); }}>Features</button>
               <button className="w-full py-3 rounded-xl text-white text-sm font-semibold border-none cursor-pointer mt-1" style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }} onClick={() => { navigate("/login"); setMobileMenu(false); }}>Sign In →</button>
             </div>
