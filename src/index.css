@@ -498,3 +498,18 @@ html, body {
         .conn-search::placeholder { color:rgba(148,163,184,0.35); }
         .conn-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:14px; }
         @media(max-width:600px) { .conn-card-grid { grid-template-columns:1fr; } }
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* IE and old Edge */
+* {
+  -ms-overflow-style: none;
+}
