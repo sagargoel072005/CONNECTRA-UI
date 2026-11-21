@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useChat } from "../../utils/useChat";
+import { useChat } from "../../utils/UseChat";
 import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
