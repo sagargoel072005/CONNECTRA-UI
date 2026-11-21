@@ -1,4 +1,4 @@
 export const BASE_URL =
   window.location.hostname === "localhost"
     ? "http://localhost:1507"
-    : "/api";
+    : "https://hello-world-backend-oevg.onrender.com";
